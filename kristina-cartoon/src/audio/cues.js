@@ -1,0 +1,26 @@
+// Sound cue timeline: { scene id, local frame (12 fps), sound, arg }.
+// Scene-relative so cues stay in sync when a scene length is tuned.
+export const CUES = [
+  { sc: '1', f: 2, s: 'hum' },
+  { sc: '1', f: 30, s: 'coo' },
+  { sc: '2', f: 8, s: 'ting' },
+  { sc: '3', f: 9, s: 'mmm', a: 1.0 },
+  { sc: '3', f: 24, s: 'mShort' },
+  { sc: '4a', f: 2, s: 'brr', a: 2.2 },
+  { sc: '4b', f: 2, s: 'brr', a: 1.9 },
+  { sc: '4b', f: 28, s: 'brr', a: 1.0 },
+  { sc: '4c', f: 0, s: 'brr', a: 1.15 },
+  { sc: '4c', f: 4, s: 'yawn' },
+  { sc: '5', f: 1, s: 'pop' },
+  { sc: '5', f: 9, s: 'mmm', a: 1.0 },
+  { sc: '5', f: 24, s: 'mShort' },
+  { sc: '7', f: 8, s: 'ooh' },
+  { sc: '7', f: 20, s: 'wee' },
+  { sc: '7', f: 33, s: 'giggle', a: 720 },
+  { sc: '7', f: 43, s: 'giggle', a: 760 },
+  { sc: '8', f: 13, s: 'hehe' },
+  { sc: '8', f: 14, s: 'wee', a: 0.6 },
+  { sc: '8', f: 15, s: 'twinkle' },
+  { sc: '8', f: 32, s: 'twinkle' },
+  { sc: '8', f: 38, s: 'giggle', a: 820 },
+];

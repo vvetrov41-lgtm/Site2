@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Serious Flower</title>
+<style>
+  html, body { margin: 0; height: 100%; background: #1d1b1c; overflow: hidden; }
+  body { display: flex; align-items: center; justify-content: center; font: 13px/1.3 system-ui, sans-serif; color: #eee; }
+  #stage { position: relative; height: 100dvh; aspect-ratio: 9 / 16; max-width: 100vw; }
+  #film { width: 100%; height: 100%; display: block; background: #fffdf9; touch-action: manipulation; }
+  #overlay { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; cursor: pointer; }
+  #overlay[hidden] { display: none; }
+  #overlay button { width: 22%; aspect-ratio: 1; border-radius: 50%; border: 0; background: rgba(35,31,32,.78); display: grid; place-items: center; cursor: pointer; }
+  #overlay svg { width: 46%; height: 46%; fill: #fff; }
+  #safe { position: absolute; inset: 0; pointer-events: none; display: none; }
+  #safe.on { display: block; }
+  #safe div { position: absolute; background: rgba(255,0,60,.16); border: 1px dashed rgba(255,0,60,.7); }
+  body.dev { justify-content: flex-start; }
+  body.dev #stage { height: 100dvh; }
+  #dev { display: none; }
+  body.dev #dev { display: flex; flex-direction: column; gap: 8px; padding: 12px; width: 300px; height: 100dvh; box-sizing: border-box; overflow: auto; background: #2a2728; }
+  #dev button { background: #444; color: #fff; border: 0; padding: 6px 9px; border-radius: 4px; cursor: pointer; }
+  #dev button.cur { background: #e0578b; }
+  #dev .row { display: flex; flex-wrap: wrap; gap: 5px; align-items: center; }
+  #dev input[type=range] { width: 100%; }
+  #dev .time { font: 600 18px/1.2 ui-monospace, monospace; }
+  @media (max-aspect-ratio: 9/16) { #stage { height: auto; width: 100vw; } }
+</style>
+</head>
+<body>
+  <div id="stage">
+    <canvas id="film" width="1080" height="1920"></canvas>
+    <div id="safe"></div>
+    <div id="overlay" hidden><button aria-label="Play"><svg viewBox="0 0 24 24"><path id="ovIcon" d="M7 4l14 8-14 8z"/></svg></button></div>
+  </div>
+  <div id="dev"></div>
+  <script type="module" src="src/main.js"></script>
+</body>
+</html>
