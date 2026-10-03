@@ -1,10 +1,13 @@
-// Scene 7 - Reaction: anticipation, "ooh", star eyes, then pure joy.
+// Scene 7 - Reaction: anticipation, "ooh", star eyes, then pure delight (no jumping).
 import { C } from '../config.js';
 import { drawClient } from '../characters/client.js';
 import { mirror } from '../props/studio.js';
-import { burst, confetti, heart } from '../fx/effects.js';
-import { camera, lines, HOORAY } from './common.js';
-import { hop, hold } from '../core/anim.js';
+import { burst, heart, sparkle } from '../fx/effects.js';
+import { camera, lines } from './common.js';
+
+// tattooed forearm held across the chest, other hand on the cheek
+const SHOW_ARM = { t: [0, -460], bend: -1 };
+const CHEEK = { t: [118, -700], bend: -1 };
 
 export const S7 = {
   name: 'Reaction',
@@ -13,30 +16,38 @@ export const S7 = {
     camera(1);
     lines(1.3);
     mirror('s7.mirror', 1230, 2240, 1.9);
-    const joy = f >= 20;
-    const h = joy ? hop(f, 20, 1) : { y: 0, sq: 1, i: -1 };
+    const delight = f >= 20;
     const expr = f < 8 ? 'look' : f < 14 ? 'ooh' : f < 20 ? 'stars' : 'joy';
-    const hb = h.i === 1 || h.i === 2 ? -28 : h.i === 5 || h.i === 0 ? 18 : 0;
+    // gentle rocking from side to side, one pose every 6 drawings
+    const sway = delight ? [0, 0.03, 0, -0.03][Math.floor((f - 20) / 6) % 4] : 0;
     drawClient({
       x: 540,
       y: 2174,
-      s: 1.85,
+      s: 1.75,
       tattoo: 1,
       expr,
       look: f < 8 ? [-0.55, 0.7] : [0, 0],
-      head: { tilt: f < 8 ? -0.05 : 0 },
-      hopY: h.y * 1.4,
-      sq: f === 8 ? 1.04 : h.sq,
-      hairBounce: hb,
-      ...(joy ? HOORAY : { armL: { t: [0, -460], bend: -1 } }),
+      head: { tilt: f < 8 ? -0.05 : sway * 1.5 },
+      lean: sway,
+      sq: f === 8 ? 1.03 : 1,
+      armL: SHOW_ARM,
+      armR: delight ? CHEEK : undefined,
+      armsOver: delight,
     });
-    if (f >= 8 && f < 12) burst('s7.burst', 540, 760, 360, 420 + (f % 2) * 30, 12, 0.13, 6);
-    if (f >= 12 && f < 20) {
-      heart('s7.h1', 200, 470 - (f - 12) * 6, 60, C.pink, -0.2);
-      heart('s7.h2', 880, 520 - (f - 12) * 6, 48, C.red, 0.2);
+    if (f >= 8 && f < 12) burst('s7.burst', 540, 760, 380, 440 + (f % 2) * 30, 12, 0.13, 6);
+    if (f >= 12) {
+      // hearts float up in 2-drawing steps
+      const up = Math.floor((f - 12) / 2) * 7;
+      heart('s7.h1', 190, 520 - up, 64, C.pink, -0.2);
+      heart('s7.h2', 890, 600 - up * 0.8, 52, C.red, 0.2);
+      if (f >= 26) heart('s7.h3', 300, 700 - (up - 49) * 0.9, 44, C.pink, 0.15);
+      if (f >= 30) heart('s7.h4', 820, 820 - (up - 63) * 0.9, 58, C.pink, -0.1);
     }
-    confetti('s7.c1', f, 20, 540, 640, 9, 380, 22);
-    confetti('s7.c2', f, 32, 540, 620, 8, 360, 20);
-    confetti('s7.c3', f, 44, 540, 640, 9, 380, 10);
+    if (delight) {
+      const tw = Math.floor(f / 3) % 2;
+      sparkle('s7.k1', 150, 860, tw ? 30 : 22, C.yellow);
+      sparkle('s7.k2', 930, 980, tw ? 22 : 32, C.yellow);
+      sparkle('s7.k3', 820, 380, tw ? 26 : 20, C.blue);
+    }
   },
 };

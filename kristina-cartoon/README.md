@@ -3,7 +3,8 @@
 A ~34 s vertical (1080×1920) crayon cartoon for Instagram Reels, drawn entirely
 in code (HTML5 Canvas + plain ES modules, no dependencies, no image assets).
 Animation advances at 12 drawings per second with a controlled hand-drawn
-line boil; all sounds are synthesised "mouth noises".
+line boil. Background music and the few sound effects are synthesised in
+code (Web Audio); there are no voices.
 
 ## Run
 
@@ -28,12 +29,6 @@ Renders every drawing in headless Chromium (Node Playwright), renders the
 soundtrack with OfflineAudioContext, and encodes `export/serious-flower.mp4`
 (H.264, 24 fps, each drawing held for two frames, AAC audio).
 `--frames 0,84,300` renders single PNGs for review.
-
-## Real voice recordings (optional)
-
-See `sounds/README.md`: drop `ooh.wav` etc. into `sounds/`, list them in
-`sounds/manifest.json`, and they replace the synthesised sounds in the player
-and in the MP4 export.
 
 ## Docs
 

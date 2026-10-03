@@ -63,7 +63,7 @@ export class Compositor {
     this.lctx = this.layer.getContext('2d');
     this.paper = makePaper();
     this.grain = this.lctx.createPattern(makeGrain(), 'repeat');
-    this.grainAlpha = 0.62;
+    this.grainAlpha = 0.5;
   }
 
   begin() {

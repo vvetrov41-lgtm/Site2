@@ -14,17 +14,19 @@ export const SAFE = {
 
 // Crayon palette.
 export const C = {
-  paper: '#fffdf9',
-  ink: '#231f20',
+  paper: '#fffefc',
+  ink: '#262122',
   white: '#ffffff',
-  skin: '#f9d7b9',
-  skinShade: '#f0bf9a',
-  blush: '#f59aa8',
+  skin: '#fad3b4',
+  skinShade: '#f2b48f',
+  skinRim: '#e9967a',
+  blush: '#f38680',
   mouth: '#9c3443',
   tongue: '#f3808f',
 
   kHair: '#f7b4cc',
   kHairHatch: '#ee8fb4',
+  kHairShade: '#dc6f9f',
   lips: '#c9737f',
   glove: '#f8a9c9',
   gloveHatch: '#ef84b2',
@@ -36,10 +38,13 @@ export const C = {
 
   cHair: '#cf9a5f',
   cHairDark: '#a26a39',
+  cHairShade: '#8d5528',
   lilac: '#c9a8f2',
   lilacDark: '#a983e0',
+  lilacShade: '#8f68cf',
   jeans: '#a5cbf2',
   jeansDark: '#79a8dc',
+  jeansShade: '#5f8fcb',
   sneaker: '#f4f1ee',
 
   pink: '#f47aa8',

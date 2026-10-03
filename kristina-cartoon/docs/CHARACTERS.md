@@ -40,7 +40,8 @@ Pearls visible. No glasses, bare hands.
 ### Expressions
 `serious` (default, comically professional), `squint` (studying),
 `blink`, nod pose (lids drop, features slide down), `twitch` (one mouth
-corner up), `happy` (closed ∩ eyes, big open grin, raised brows, blush).
+corner up), `content` (closed ∩ eyes, quiet closed smile, blush — used in the
+ending), `happy` (closed ∩ eyes, big open grin).
 
 ## Client
 

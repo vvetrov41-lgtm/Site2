@@ -4,7 +4,7 @@ import { C } from '../config.js';
 import { shape, stroke, ell, dot, withClip } from '../core/pencil.js';
 import { star } from '../fx/effects.js';
 
-const BLUSH = { fill: C.blush, tint: 0.32, hatchAlpha: 0.45, occlude: false, ink: false, spacing: 7, lw: 4 };
+const BLUSH = { fill: C.blush, tint: 0.4, hatchAlpha: 0.6, occlude: false, ink: false, spacing: 5, lw: 3.6, cross: true };
 
 function openMouth(key, mx, my, wHalf, depth, lift = 0) {
   const pts = [
@@ -73,16 +73,17 @@ export function kristinaFace(p) {
   const look = p.look || [0, 0];
   const lx = look[0];
   const ly = Math.min(1, look[1] + nod * 0.9);
-  const happy = ex === 'happy';
+  const happy = ex === 'happy' || ex === 'content';
+  const content = ex === 'content';
 
   for (const side of [-1, 1]) {
-    shape(`k.blush${side}`, ell(side * 86 + fx * 0.8, 70 + fy, 22, 12, 8), { ...BLUSH, tint: happy ? 0.5 : 0.25 });
+    shape(`k.blush${side}`, ell(side * 88 + fx * 0.8, 70 + fy, 27, 16, 8), { ...BLUSH, tint: happy ? 0.5 : 0.32 });
   }
   const eyeY = 18 + fy;
   const drop = ex === 'squint' ? 9 : nod * 15;
   for (const side of [-1, 1]) {
     const cx = side * 50 + fx;
-    const eyeMode = ex === 'happy' ? 'happy' : ex === 'blink' ? 'blink' : ex === 'squint' ? 'squint' : 'open';
+    const eyeMode = happy ? 'happy' : ex === 'blink' ? 'blink' : ex === 'squint' ? 'squint' : 'open';
     kEye(side, cx, eyeY, lx, ly, eyeMode, drop);
     const bY = eyeY - 46 + (ex === 'squint' ? 7 : 0) + nod * 6;
     if (happy) stroke(`k.brow${side}`, [[cx + side * 30, bY - 8], [cx, bY - 18], [cx - side * 24, bY - 10]], { w: 6 });
@@ -92,7 +93,11 @@ export function kristinaFace(p) {
   stroke('k.nose', [[fx + 3, 26 + fy], [fx + 6, 54 + fy], [fx - 3, 60 + fy]], { w: 3 });
   // subtle lips
   const my = 92 + fy;
-  if (happy) openMouth('k.mouth', fx, my, 38, 40, 4);
+  if (content) {
+    // quiet, satisfied closed smile
+    stroke('k.mouth', [[fx - 24, my - 6], [fx - 10, my + 5], [fx + 10, my + 5], [fx + 24, my - 6]], { w: 4.8, color: C.lips });
+    stroke('k.mouthInk', [[fx - 20, my - 3], [fx, my + 6], [fx + 20, my - 3]], { w: 3, alpha: 0.6 });
+  } else if (happy) openMouth('k.mouth', fx, my, 38, 40, 4);
   else if (ex === 'twitch') {
     stroke('k.mouth', [[fx - 15, my + 1], [fx, my], [fx + 11, my - 3], [fx + 18, my - 9]], { w: 4.6, color: C.lips });
     stroke('k.lip', [[fx - 6, my + 7], [fx + 4, my + 8]], { w: 3, color: C.lips, alpha: 0.7 });

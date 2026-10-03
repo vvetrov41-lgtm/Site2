@@ -147,7 +147,14 @@ function strokePoly(line, wScreen, seed, color, alpha, taper) {
   ctx.globalAlpha = 1;
 }
 
+/** Feature switches (profiling / low-power fallback). */
+export const PERF = { shade: true, cross: true, sketch: true, hatch: true };
+
+const LINE_K = 0.82; // pencil outlines: two overlapping passes, not one marker line
+
 function closedInk(pts, seed, o) {
+  const w = (o.w ?? 5) * LINE_K;
+  const ink = o.ink ?? C.ink;
   const dense = spline(jitter(pts, seed, o.wob ?? 1), true, o.sharp);
   const n = dense.length;
   const start = o.start !== undefined ? Math.floor(o.start * n) % n : Math.floor(hash(seed, 7) * n);
@@ -155,7 +162,7 @@ function closedInk(pts, seed, o) {
   if (o.progress !== undefined && o.progress < 1) {
     if (o.progress <= 0) return;
     for (let i = 0; i <= n; i++) path.push(dense[(start + i) % n]);
-    strokePoly(trim(path, o.progress), o.w ?? 5, seed, o.ink ?? C.ink, o.inkAlpha ?? 0.95, true);
+    strokePoly(trim(path, o.progress), w, seed, ink, o.inkAlpha ?? 0.95, true);
     return;
   }
   // A child closes a loop by overshooting the start a little.
@@ -168,7 +175,17 @@ function closedInk(pts, seed, o) {
     p[0] += drift * f * sr(seed, 3);
     p[1] += drift * f * sr(seed, 4);
   }
-  strokePoly(path, o.w ?? 5, seed, o.ink ?? C.ink, o.inkAlpha ?? 0.95, true);
+  strokePoly(path, w, seed, ink, o.inkAlpha ?? 0.92, true);
+  // Pencil re-trace: a second, lighter pass over part of the outline.
+  if (PERF.sketch && o.sketch !== false && n > 24 && !o.sharp) {
+    const d2 = spline(jitter(pts, seed + 5, (o.wob ?? 1) * 1.7), true);
+    const m = d2.length;
+    const s2 = Math.floor(hash(seed, 8) * m);
+    const len = Math.floor(m * (0.7 + hash(seed, 9) * 0.3));
+    const part = [];
+    for (let i = 0; i <= len; i++) part.push(d2[(s2 + i) % m]);
+    strokePoly(part, w * 0.6, seed + 5, ink, 0.62, true);
+  }
 }
 
 function tracePath(ctx, pts) {
@@ -178,24 +195,10 @@ function tracePath(ctx, pts) {
   ctx.closePath();
 }
 
-// Crayon fill: paper occluder, light tint, then a zig-zag scribble.
-function crayonFill(pts, seed, o) {
-  const ctx = S.ctx;
+// One zig-zag colored-pencil pass over the current clip.
+function hatchPass(ctx, fp, seed, ang, spScreen, lwScreen, alpha, color, band = 0) {
   const u = unit();
-  const fp = spline(jitter(pts, seed + 31, (o.wob ?? 1) * 1.25), true, o.sharp);
   const v = S.boil ? S.variant : 0;
-  ctx.save();
-  tracePath(ctx, fp);
-  if (o.occlude !== false) {
-    ctx.fillStyle = C.paper;
-    ctx.fill();
-  }
-  ctx.clip();
-  ctx.globalAlpha = o.tint ?? 0.45;
-  ctx.fillStyle = o.fill;
-  ctx.fill();
-
-  const ang = o.angle ?? -0.72 + sr(seed, 9) * 0.28;
   const dx = Math.cos(ang);
   const dy = Math.sin(ang);
   const nx = -dy;
@@ -212,24 +215,57 @@ function crayonFill(pts, seed, o) {
     if (nn < nmin) nmin = nn;
     if (nn > nmax) nmax = nn;
   }
-  const sp = (o.spacing ?? 8.5) / u;
+  const sp = spScreen / u;
   const pad = sp * 1.5;
-  ctx.globalAlpha = o.hatchAlpha ?? 0.72;
-  ctx.strokeStyle = o.hatch ?? o.fill;
-  ctx.lineWidth = (o.lw ?? 6) / u;
+  // band > 0: only the last `band` fraction of the shape across the strokes (shadow side)
+  if (band) nmin = nmax - (nmax - nmin) * band;
+  ctx.globalAlpha = alpha;
+  ctx.strokeStyle = color;
+  ctx.lineWidth = lwScreen / u;
   ctx.lineJoin = 'round';
   ctx.lineCap = 'round';
   ctx.beginPath();
   let i = 0;
   for (let nn = nmin - sp; nn <= nmax + sp; nn += sp, i++) {
     const d = (i & 1 ? dmax + pad : dmin - pad) + sr(seed + v * 17, i, 3) * pad * 0.6;
-    const jn = nn + sr(seed + v * 17, i, 5) * sp * 0.4;
+    const jn = nn + sr(seed + v * 17, i, 5) * sp * 0.45;
     const x = d * dx + jn * nx;
     const y = d * dy + jn * ny;
     if (i === 0) ctx.moveTo(x, y);
     else ctx.lineTo(x, y);
   }
   ctx.stroke();
+}
+
+// Colored-pencil fill: paper occluder, light tint, two crossing scribble passes,
+// and a darker scribble along the shadow side (light comes from the top-left).
+function crayonFill(pts, seed, o) {
+  const ctx = S.ctx;
+  const fp = spline(jitter(pts, seed + 31, (o.wob ?? 1) * 1.25), true, o.sharp);
+  ctx.save();
+  tracePath(ctx, fp);
+  if (o.occlude !== false) {
+    ctx.fillStyle = C.paper;
+    ctx.fill();
+  }
+  ctx.clip();
+  ctx.globalAlpha = o.tint ?? 0.45;
+  ctx.fillStyle = o.fill;
+  ctx.fill();
+
+  const ang = o.angle ?? -0.78 + sr(seed, 9) * 0.3;
+  const sp = o.spacing ?? 7;
+  const lw = o.lw ?? 4.6;
+  const hatch = o.hatch ?? o.fill;
+  if (PERF.hatch) hatchPass(ctx, fp, seed, ang, sp, lw, o.hatchAlpha ?? 0.7, hatch);
+  if (PERF.cross && o.cross !== false && (o.hatchAlpha ?? 0.7) > 0) hatchPass(ctx, fp, seed + 101, ang + 0.55, sp * 1.35, lw * 0.75, (o.hatchAlpha ?? 0.7) * 0.55, hatch);
+
+  if (PERF.shade && o.shade) {
+    // shadow side (light from the top-left): strokes laid across the light direction,
+    // only over the far band of the shape - no extra clipping needed
+    const la = -0.64 + sr(seed, 12) * 0.12;
+    hatchPass(ctx, fp, seed + 202, la, sp * 0.8, lw * 0.9, o.shadeAlpha ?? 0.6, o.shade, o.shadeBand ?? 0.3);
+  }
   ctx.restore();
   ctx.globalAlpha = 1;
 }
@@ -253,7 +289,7 @@ export function stroke(key, pts, o = {}) {
     if (o.progress <= 0) return;
     line = trim(line, o.progress);
   }
-  strokePoly(line, o.w ?? 5, seed, o.color ?? C.ink, o.alpha ?? 0.95, o.taper ?? true);
+  strokePoly(line, (o.w ?? 5) * LINE_K, seed, o.color ?? C.ink, o.alpha ?? 0.95, o.taper ?? true);
 }
 
 /** Solid round dot (eye highlights etc.), lightly wobbled. */

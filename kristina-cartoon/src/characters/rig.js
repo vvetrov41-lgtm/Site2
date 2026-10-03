@@ -3,11 +3,11 @@
 // Scenes pass a pose; a style object supplies clothes, hair and face.
 
 import { C } from '../config.js';
-import { shape, ell, getCtx } from '../core/pencil.js';
+import { shape, stroke, ell, getCtx } from '../core/pencil.js';
 import { ik2, lerp } from '../core/anim.js';
 
 export const B = {
-  headY: -770,
+  headY: -790,
   shX: 104,
   shY: -548,
   hipX: 46,
@@ -17,13 +17,16 @@ export const B = {
   sitDrop: 110,
 };
 
+// Chibi proportions: the head is drawn a bit bigger than the body grid.
+export const HEAD_K = 1.12;
+
 export const FILL = {
-  skin: { fill: C.skin, tint: 0.62, hatch: C.skinShade, hatchAlpha: 0.38, spacing: 10 },
-  black: { fill: C.black, tint: 0.88, hatch: C.blackHatch, hatchAlpha: 0.5 },
-  glove: { fill: C.glove, tint: 0.7, hatch: C.gloveHatch, hatchAlpha: 0.6 },
-  lilac: { fill: C.lilac, tint: 0.55, hatch: C.lilacDark, hatchAlpha: 0.55 },
-  jeans: { fill: C.jeans, tint: 0.55, hatch: C.jeansDark, hatchAlpha: 0.55 },
-  sneaker: { fill: C.sneaker, tint: 1, hatch: C.greyLight, hatchAlpha: 0.5 },
+  skin: { fill: C.skin, tint: 0.6, hatch: C.skinShade, hatchAlpha: 0.42, spacing: 8, shade: C.skinRim, shadeAlpha: 0.45 },
+  black: { fill: C.black, tint: 0.85, hatch: C.blackHatch, hatchAlpha: 0.6, shade: '#0f0c0d', shadeAlpha: 0.5 },
+  glove: { fill: C.glove, tint: 0.65, hatch: C.gloveHatch, hatchAlpha: 0.6, shade: '#e0679d', shadeAlpha: 0.5 },
+  lilac: { fill: C.lilac, tint: 0.5, hatch: C.lilacDark, hatchAlpha: 0.6, shade: C.lilacShade, shadeAlpha: 0.55 },
+  jeans: { fill: C.jeans, tint: 0.5, hatch: C.jeansDark, hatchAlpha: 0.6, shade: C.jeansShade, shadeAlpha: 0.55 },
+  sneaker: { fill: C.sneaker, tint: 1, hatch: C.greyLight, hatchAlpha: 0.5, cross: false },
 };
 
 const sub = (a, b) => [a[0] - b[0], a[1] - b[1]];
@@ -106,6 +109,7 @@ export function drawPerson(p, st) {
       ctx.save();
       ctx.translate(headC[0], headC[1]);
       ctx.rotate(p.head?.tilt || 0);
+      ctx.scale(HEAD_K, HEAD_K);
       fn();
       ctx.restore();
     });
@@ -138,17 +142,17 @@ export function drawPerson(p, st) {
 function drawArm(p, st, side, drop) {
   const a = p['arm' + side] || {};
   const sg = side === 'L' ? -1 : 1;
-  const sh = [sg * B.shX, B.shY + drop];
+  const sh = [sg * (st.shX ?? B.shX), B.shY + drop];
   const t = a.t ? [a.t[0], a.t[1] + drop] : [sg * 126, B.hipY + drop - 8];
   const bend = a.bend ?? sg;
   const [el, hd] = ik2(sh[0], sh[1], t[0], t[1], B.upper, B.fore, bend);
   const key = `${st.id}.arm${side}`;
-  shape(key, limbPts(sh, el, hd, 46, 42, 38), FILL.skin);
+  shape(key, limbPts(sh, el, hd, 38, 34, 30), FILL.skin);
   st.armDecor?.(p, side, sh, el, hd);
   st.sleeve(key + '.sl', sh, el, hd, sg);
   a.item?.(hd, el);
   const glove = a.glove ?? p.gloves;
-  hand(key + '.h', hd, norm(sub(hd, el)), sg, glove ? FILL.glove : FILL.skin, 25, a.hand);
+  hand(key + '.h', hd, norm(sub(hd, el)), sg, glove ? FILL.glove : FILL.skin, 21, a.hand);
   a.after?.(hd, el);
 }
 
@@ -188,7 +192,13 @@ function drawLegs(p, st, hipY) {
   shape(`${st.id}.legR`, tubePts(hr, fr, lw[0], lw[1]), st.pants);
   st.shoe(`${st.id}.shoeL`, fl, -1);
   st.shoe(`${st.id}.shoeR`, fr, 1);
-  shape(`${st.id}.hips`, [[-104, hipY - 22], [0, hipY - 26], [104, hipY - 22], [108, hipY + 40], [60, hipY + 66], [0, hipY + 50], [-60, hipY + 66], [-108, hipY + 40]], st.pants);
+  const hw = st.hipW ?? 104;
+  shape(`${st.id}.hips`, [[-hw, hipY - 22], [0, hipY - 26], [hw, hipY - 22], [hw + 4, hipY + 40], [hw * 0.58, hipY + 66], [0, hipY + 50], [-hw * 0.58, hipY + 66], [-hw - 4, hipY + 40]], st.pants);
+  if (st.seam) {
+    // jeans seams
+    stroke(`${st.id}.seamL`, [[hl[0], hipY + 60], [(hl[0] + fl[0]) / 2, (hipY + fl[1]) / 2 + 30], [fl[0], fl[1] - 30]], { w: 2.4, color: st.seam, alpha: 0.8 });
+    stroke(`${st.id}.seamR`, [[hr[0], hipY + 60], [(hr[0] + fr[0]) / 2, (hipY + fr[1]) / 2 + 30], [fr[0], fr[1] - 30]], { w: 2.4, color: st.seam, alpha: 0.8 });
+  }
 }
 
 export { lerp, add, sub, norm, mid, perp };

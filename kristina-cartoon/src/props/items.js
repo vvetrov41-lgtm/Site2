@@ -34,37 +34,6 @@ const FLOWER = buildFlower();
 const INK_TOTAL = FLOWER.reduce((a, p) => a + p.len, 0);
 const COLOR_ORDER = ['p0', 'p1', 'p2', 'p3', 'p4', 'c', 'lL', 'lR', 'st'];
 
-function pointOnPath(path, d) {
-  for (let i = 1; i < path.length; i++) {
-    const l = Math.hypot(path[i][0] - path[i - 1][0], path[i][1] - path[i - 1][1]);
-    if (d <= l) {
-      const t = l ? d / l : 0;
-      return [path[i - 1][0] + (path[i][0] - path[i - 1][0]) * t, path[i - 1][1] + (path[i][1] - path[i - 1][1]) * t];
-    }
-    d -= l;
-  }
-  return path[path.length - 1];
-}
-
-/** Needle position (unit coords) for an ink progress 0..1. */
-export function flowerInkTip(progress) {
-  let d = Math.max(0, Math.min(1, progress)) * INK_TOTAL;
-  for (const p of FLOWER) {
-    if (d <= p.len) return pointOnPath(p.path, d);
-    d -= p.len;
-  }
-  return [0, 0.48];
-}
-
-/** Centre (unit coords) of the part being coloured at a colour progress. */
-export function flowerColorTip(progress) {
-  const i = Math.min(COLOR_ORDER.length - 1, Math.floor(progress * COLOR_ORDER.length));
-  const part = FLOWER.find((p) => p.id === COLOR_ORDER[i]);
-  const pts = part.pts;
-  const c = pts.reduce((a, q) => [a[0] + q[0] / pts.length, a[1] + q[1] / pts.length], [0, 0]);
-  return c;
-}
-
 /**
  * Draw the flower. prog = { ink: 0..1, color: 0..1 }. w = outline width (screen px).
  */

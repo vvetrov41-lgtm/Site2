@@ -1,6 +1,7 @@
 // Player (12 fps clock) + dev review tools. The dev UI is DOM only, never drawn on the canvas.
 import { FPS, H, SAFE, W } from '../config.js';
 import { LiveAudio } from '../audio/engine.js';
+import { PERF } from '../core/pencil.js';
 
 const ICON_PLAY = 'M7 4l14 8-14 8z';
 const ICON_REPLAY = 'M12 4V1L7 6l5 5V7a6 6 0 11-6 6H4a8 8 0 108-9z';
@@ -25,9 +26,20 @@ export function startApp({ canvas, timeline, renderFrame, state, dev }) {
     return p.startT + (performance.now() - p.startWall) / 1000;
   }
 
+  // Adaptive quality for slow devices (live playback only; exports are always full quality):
+  // if a drawing takes longer than ~75 ms, drop the cross-hatch, then the pencil re-trace.
+  let ema = 0;
   function show(f, force = false) {
     if (f === p.shown && !force) return;
+    const t0 = performance.now();
     p.shown = renderFrame(f);
+    const dt = performance.now() - t0;
+    ema = ema ? ema * 0.8 + dt * 0.2 : dt;
+    if (p.playing && ema > 75) {
+      if (PERF.cross) PERF.cross = false;
+      else if (PERF.sketch) PERF.sketch = false;
+      ema = 0;
+    }
     ui?.update(p.shown);
   }
 

@@ -52,7 +52,7 @@ kristina-cartoon/
 
 ## 2–3. Storyboard and exact durations
 
-12 fps; 1 frame = 83.3 ms. Total **412 frames = 34.33 s** (after the timing pass).
+12 fps; 1 frame = 83.3 ms.
 
 | # | Scene | Frames | Time | Shot |
 |---|---|---|---|---|
@@ -60,12 +60,14 @@ kristina-cartoon/
 | 2 | The flower | 42–83 (42) | 00:03.5–00:07.0 | medium two-shot |
 | 3 | Serious nod #1 | 84–125 (42) | 00:07.0–00:10.5 | Kristina close-up, slight push-in |
 | 4a | Tattooing — setup | 126–155 (30) | 00:10.5–00:13.0 | medium wide, both seated |
-| 4b | Tattooing — insert | 156–203 (48) | 00:13.0–00:17.0 | arm close-up, flower appears |
-| 4c | Tattooing — last touch | 204–223 (20) | 00:17.0–00:18.67 | same as 4a (camera 1.12×) |
-| 5 | Serious nod #2 | 224–265 (42) | 00:18.67–00:22.17 | identical framing to scene 3 |
-| 6 | The mirror | 266–309 (44) | 00:22.17–00:25.83 | wide, slow push-in |
-| 7 | Reaction | 310–363 (54) | 00:25.83–00:30.33 | client waist-up |
-| 8 | Happy ending | 364–411 (48) | 00:30.33–00:34.33 | two-shot, final hold |
+| 4b | Tattooing — concentration | 156–191 (36) | 00:13.0–00:16.0 | Kristina profile close-up (tattoo not shown) |
+| 4c | Tattooing — last touch | 192–215 (24) | 00:16.0–00:18.0 | same as 4a |
+| 5 | Serious nod #2 | 216–257 (42) | 00:18.0–00:21.5 | identical framing to scene 3 |
+| 6 | The mirror | 258–301 (44) | 00:21.5–00:25.17 | wide, slow push-in — first look at the tattoo |
+| 7 | Reaction | 302–355 (54) | 00:25.17–00:29.67 | client waist-up, delight without jumping |
+| 8 | Happy ending | 356–403 (48) | 00:29.67–00:33.67 | two-shot, quiet satisfied smile, final hold |
+
+Total **404 frames = 33.67 s** (current version; the sections below describe how we got here).
 
 ## 4. Character design spec
 
@@ -274,3 +276,40 @@ Timing
   onset scoop, aspiration noise, cascade formants, weaker/delayed vibrato, irregular lip trill,
   phone-mic colouration + small-room reverb. Any cue can be replaced by a real recording
   (`sounds/README.md`, `sounds/manifest.json`).
+
+## Revision 3 — closer to the reference drawing, music, calmer ending
+
+Drawing (closer to the colored-pencil reference)
+- Fills: light tint + two crossing scribble passes + a darker scribble on the shadow
+  side of every shape (shape minus itself nudged toward the top-left light).
+- Outlines: pencil, two overlapping passes (main + lighter re-trace), slightly thinner.
+- Bigger chibi heads (×1.12), slimmer arms, legs and torsos, jeans seams.
+- Hair: wavy generated outlines, curls and strand lines (client very wavy, Kristina soft and straight).
+- Warmer skin with orange shading, stronger scribbled blush, near-white paper, less grain on blacks.
+
+Story / staging
+- The tattoo is not shown while she works: 4b is now a profile close-up of Kristina's
+  concentration (glasses, AirPod, pink gloves). The tattoo is first seen in the mirror.
+- Ending without jumping: the client is delighted (tattooed arm held to the chest, hand
+  on her cheek, gentle sway, floating hearts); Kristina gives a quiet satisfied smile and
+  a small soft nod — the third, kind version of her nod.
+
+Sound
+- All voices removed.
+- Background music synthesised in code (`src/audio/music.js`): music box, plucked chords,
+  soft bass, shaker, 112 BPM, C major.
+  - A (0–7.0 s): playful intro, C–Am–F–G.
+  - Stops dead at the cut to Kristina's stare; silence; one woodblock "tok" on the nod.
+  - B (10.5–18.0 s): busier arpeggio groove under the tattooing (+ quiet machine buzz).
+  - Stops again for the second stare; "p" click, silence, "tok".
+  - C (21.5–25.8 s): suspense on G7, one music-box step up per beat, clock ticks.
+  - D (25.8 s–end): glissando at the reveal, C–F–G, final C chord rings under the last hold.
+- Remaining effects: phone bell, woodblock, click, machine buzz, twinkles.
+
+Performance
+- Profiling (software-rendered headless Chromium, no GPU): the contour-following shadow
+  clip cost ~55 ms per drawing. Replaced by a shadow band of strokes laid across the light
+  direction (no extra clip): 157 ms → 99 ms per drawing in that worst-case environment.
+- Real phones draw Canvas 2D on the GPU; as a safety net the player measures its own
+  drawing time and, above ~75 ms, drops the cross-hatch and then the pencil re-trace
+  (live playback only; the MP4 export always uses full quality).
