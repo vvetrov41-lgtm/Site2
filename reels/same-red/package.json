@@ -1,0 +1,17 @@
+{
+  "name": "same-red",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Same red. Three skins. Code-driven 9:16 reel, rendered frame by frame.",
+  "scripts": {
+    "render": "node scripts/render.mjs",
+    "preview": "node scripts/serve.mjs --open",
+    "check": "node scripts/check.mjs"
+  },
+  "devDependencies": {
+    "@fontsource/bodoni-moda": "^5.3.0",
+    "@fontsource/ibm-plex-mono": "^5.3.0",
+    "playwright": "1.56"
+  }
+}

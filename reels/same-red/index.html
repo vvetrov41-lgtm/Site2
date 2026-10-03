@@ -1,0 +1,23 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Same red — render</title>
+<style>html,body{margin:0;background:#0A0A0A;overflow:hidden}canvas{display:block}</style>
+</head>
+<body>
+<canvas id="c"></canvas>
+<script type="module">
+  import { boot } from './src/main.js';
+  const canvas = document.getElementById('c');
+  boot(canvas).then(({ config, scene, frames }) => {
+    // Render API for scripts/render.mjs: one call per frame, no rAF.
+    window.renderFrame = (frame, opts = {}) => scene.draw(frame / config.fps, frame, opts);
+    window.sceneState = (t) => scene.state(t);
+    window.reel = { fps: config.fps, frames, width: config.width, height: config.height };
+    window.renderFrame(0);
+    window.__ready = true;
+  }).catch((e) => { window.__error = String(e && e.stack || e); });
+</script>
+</body>
+</html>

@@ -1,0 +1,75 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Same red — preview</title>
+<style>
+  :root { --bg:#0A0A0A; --ink:#EDEAE4; }
+  html,body { margin:0; height:100%; background:#111; color:var(--ink); font:13px/1.4 "IBM Plex Mono", ui-monospace, monospace; }
+  .wrap { display:flex; gap:20px; height:100%; padding:16px; box-sizing:border-box; }
+  .stage { position:relative; height:100%; aspect-ratio:9/16; flex:none; }
+  canvas { width:100%; height:100%; display:block; background:var(--bg); }
+  .safe { position:absolute; left:0; right:0; border:1px dashed rgba(255,80,80,.55); pointer-events:none; display:none; }
+  .panel { display:flex; flex-direction:column; gap:12px; min-width:260px; }
+  input[type=range] { width:100%; }
+  button, label { cursor:pointer; }
+  button { background:none; color:var(--ink); border:1px solid #555; padding:6px 12px; font:inherit; }
+  pre { margin:0; white-space:pre-wrap; opacity:.85; }
+  @media (max-width: 700px) { .wrap { flex-direction:column; height:auto; } .stage { height:auto; width:100%; } }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="stage">
+    <canvas id="c"></canvas>
+    <div class="safe" id="safeTop" style="top:0"></div>
+    <div class="safe" id="safeBottom" style="bottom:0"></div>
+  </div>
+  <div class="panel">
+    <input id="t" type="range" min="0" step="1" value="0">
+    <div><button id="play">Play</button> <span id="time"></span></div>
+    <label><input id="grain" type="checkbox" checked> grain</label>
+    <label><input id="safe" type="checkbox"> Instagram safe zones</label>
+    <pre id="state"></pre>
+  </div>
+</div>
+<script type="module">
+  import { boot } from './src/main.js';
+  const canvas = document.getElementById('c');
+  const { config, scene, frames } = await boot(canvas);
+  const $ = (id) => document.getElementById(id);
+  const slider = $('t');
+  slider.max = frames - 1;
+  $('safeTop').style.height = (config.safe.top / config.height * 100) + '%';
+  $('safeBottom').style.height = (config.safe.bottom / config.height * 100) + '%';
+  let playing = false, startAt = 0, startFrame = 0;
+  function show(frame) {
+    scene.draw(frame / config.fps, frame, { noGrain: !$('grain').checked });
+    const s = scene.state(frame / config.fps);
+    $('time').textContent = `${(frame / config.fps).toFixed(2)} s · frame ${frame}/${frames - 1}`;
+    $('state').textContent = `target ${s.target}\n` + s.skins.map((k) => `${k.label.padEnd(7)} ${k.hex}  recipe ${k.recipe} @ ${k.opacity}  drops ${k.drops}`).join('\n');
+  }
+  // Preview only: playback uses the wall clock; the renderer never does.
+  function tick(now) {
+    if (!playing) return;
+    const f = Math.floor(startFrame + ((now - startAt) / 1000) * config.fps) % frames;
+    slider.value = f; show(f);
+    requestAnimationFrame(tick);
+  }
+  slider.oninput = () => show(+slider.value);
+  $('play').onclick = () => {
+    playing = !playing; $('play').textContent = playing ? 'Pause' : 'Play';
+    if (playing) { startAt = performance.now(); startFrame = +slider.value; requestAnimationFrame(tick); }
+  };
+  $('grain').onchange = () => show(+slider.value);
+  $('safe').onchange = () => { for (const id of ['safeTop', 'safeBottom']) $(id).style.display = $('safe').checked ? 'block' : 'none'; };
+  addEventListener('keydown', (e) => {
+    if (e.key === ' ') { e.preventDefault(); $('play').click(); }
+    if (e.key === 'ArrowRight') { slider.value = Math.min(frames - 1, +slider.value + 1); show(+slider.value); }
+    if (e.key === 'ArrowLeft') { slider.value = Math.max(0, +slider.value - 1); show(+slider.value); }
+  });
+  show(0);
+</script>
+</body>
+</html>
