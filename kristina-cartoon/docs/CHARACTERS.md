@@ -34,7 +34,7 @@ Pearls visible. No glasses, bare hands.
   visible ear, oversized black top, pink gloves, pen machine.
 - **Front view (scenes 5, 8)**: same hair pulled back (curtain fringe parted
   in the middle so the moon stays visible, ponytail peeking behind the neck),
-  black round glasses, white AirPod under the screen-right ear, pink gloves.
+  black round glasses in scene 5 only (taken off for the happy ending, scene 8), white AirPod under the screen-right ear, pink gloves.
 - **Insert (4b)**: only her pink-gloved hands, black sleeve cuff.
 
 ### Expressions

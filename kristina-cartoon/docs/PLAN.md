@@ -269,3 +269,8 @@ Timing
 - Sound cues made scene-relative.
 
 - Kristina's dark roots removed on request; hair is solid pastel pink with a deeper-pink parting line.
+- Glasses removed in the happy ending (scene 8) so Kristina's smile reads cleanly.
+- Sound: synth voices sounded synthetic → glottal source with spectral tilt, pitch jitter + shimmer,
+  onset scoop, aspiration noise, cascade formants, weaker/delayed vibrato, irregular lip trill,
+  phone-mic colouration + small-room reverb. Any cue can be replaced by a real recording
+  (`sounds/README.md`, `sounds/manifest.json`).

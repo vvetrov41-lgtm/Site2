@@ -95,7 +95,7 @@ const KRISTINA = {
       // AirPod in the screen-right ear
       shape('k.pod', ell(150, 26, 10, 11, 7), { fill: C.white, tint: 1, hatchAlpha: 0, w: 3 });
       shape('k.podStem', [[146, 32], [156, 32], [158, 74], [148, 76]], { fill: C.white, tint: 1, hatchAlpha: 0, w: 3 });
-      kristinaGlasses(p);
+      if (p.glasses !== false) kristinaGlasses(p);
       return;
     }
     // soft wispy bangs that open around the moon

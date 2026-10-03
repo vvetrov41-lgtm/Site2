@@ -29,6 +29,12 @@ soundtrack with OfflineAudioContext, and encodes `export/serious-flower.mp4`
 (H.264, 24 fps, each drawing held for two frames, AAC audio).
 `--frames 0,84,300` renders single PNGs for review.
 
+## Real voice recordings (optional)
+
+See `sounds/README.md`: drop `ooh.wav` etc. into `sounds/`, list them in
+`sounds/manifest.json`, and they replace the synthesised sounds in the player
+and in the MP4 export.
+
 ## Docs
 
 - `docs/PLAN.md` — architecture, storyboard, timeline, sound cues, safe areas,

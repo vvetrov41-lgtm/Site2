@@ -28,6 +28,7 @@ export const S8 = {
       y: 1640,
       s: 1,
       outfit: 'work',
+      glasses: false,
       gloves: true,
       expr: kExpr,
       look: f < 6 ? [0, 0] : f < 13 ? [0.85, 0] : [0, 0],
