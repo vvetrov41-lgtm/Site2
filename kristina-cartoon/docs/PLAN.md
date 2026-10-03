@@ -76,7 +76,7 @@ legs: stand / walk cycle (8 drawings) / sit. Front-facing bodies; head turn
 is faked by sliding facial features and hair parting (children's drawing logic).
 
 **Kristina** — see `docs/CHARACTERS.md` (authoritative, updated from the real
-photo references). Pastel-pink hair with dark roots, crescent-moon forehead
+photo references). Pastel-pink hair (no dark roots), crescent-moon forehead
 tattoo, big serious eyes, slim nose, subtle lips, black oversized top.
 Two looks: *intro* (loose hair, soft bangs, moon visible, pearls) in scenes
 1–3, and *working* (low ponytail, black glasses, white AirPod, pink gloves)
@@ -246,7 +246,7 @@ All sounds are synthesised "mouth noises" (formant voice + noise), no words.
 | Constant motion in scene 4 would be tiring. | Pause between outline and colour; yawn gag; stillness at end of 4c. |
 | Client's long-sleeve top in the reference would hide the tattoo. | Short sleeves. |
 | Kristina's look was corrected from photos (pink hair, moon, glasses). Pink gloves + pink hair could merge with a pink tattoo flower. | Tattoo / phone flower is now coral-red with a yellow centre; gloves stay pastel pink. |
-| Hair change between scenes 3 and 4 could read as a different person. | Every view keeps pink hair + dark roots + black top; front views always show the moon; the working look is introduced on the cut into the tattoo scene. |
+| Hair change between scenes 3 and 4 could read as a different person. | Every view keeps pink hair + black top; front views always show the moon; the working look is introduced on the cut into the tattoo scene. |
 | Wobble amplitude in local units would explode in close-ups. | All wobble/line widths computed in screen pixels. |
 | Ending risked a too-short final hold. | 18-frame (1.5 s) final hold. |
 
@@ -267,3 +267,5 @@ Timing
 - 4c −4 frames (two silences in a row before the second nod dragged).
 - Mirror look −4 frames (anticipation stays ~2.4 s incl. scene 7's beat).
 - Sound cues made scene-relative.
+
+- Kristina's dark roots removed on request; hair is solid pastel pink with a deeper-pink parting line.

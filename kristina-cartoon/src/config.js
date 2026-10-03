@@ -25,7 +25,6 @@ export const C = {
 
   kHair: '#f7b4cc',
   kHairHatch: '#ee8fb4',
-  kRoots: '#7b5960',
   lips: '#c9737f',
   glove: '#f8a9c9',
   gloveHatch: '#ef84b2',

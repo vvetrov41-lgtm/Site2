@@ -5,8 +5,8 @@ scenes pass poses only. Children's-drawing simplification everywhere.
 
 ## Kristina — tattoo artist (authoritative, from photo references)
 
-Identity cues that must survive every shot: **pastel-pink hair with dark
-roots, crescent-moon forehead tattoo (front views), black oversized top,
+Identity cues that must survive every shot: **pastel-pink hair (solid colour, no dark
+roots), crescent-moon forehead tattoo (front views), black oversized top,
 glasses + pink gloves while working.**
 
 | Element | Spec |
@@ -17,19 +17,19 @@ glasses + pink gloves while working.**
 | Nose | slim single line with a tiny hook |
 | Lips | subtle: short muted-rose line with a tiny lower-lip arc |
 | Forehead | small black crescent moon, horns up, centred just under the bangs |
-| Hair colour | pastel pink `#f7b4cc`, crayon hatch `#ee8fb4`, roots `#7b5960` along the parting / crown |
+| Hair colour | pastel pink `#f7b4cc`, crayon hatch `#ee8fb4`; no dark roots (removed on request) |
 | Clothing | black oversized top with dropped shoulders and wide sleeves to below the elbow; black trousers; black shoes |
 | Extras | layered pearl necklace = two strands of white dots (intro look) |
 | Arms | two tiny ink doodles visible below the sleeves (star, heart) |
 
 ### Look A — "intro" (scenes 1, 2, 3)
-Front view. Loose shoulder-length hair with flicked ends, centre parting
-with dark roots, soft wispy bangs that open around the moon tattoo.
+Front view. Loose shoulder-length hair with flicked ends, centre parting,
+soft wispy bangs that open around the moon tattoo.
 Pearls visible. No glasses, bare hands.
 
 ### Look B — "working" (scenes 4, 5, 6-background-free, 7-absent, 8)
 - **Side profile (scenes 4a, 4c)**: facing right, hair swept back into a low
-  ponytail with a black tie, dark roots at the crown, fringe swept over the
+  ponytail with a black tie, fringe swept over the
   forehead, black glasses (lens + temple arm to the ear), white AirPod in the
   visible ear, oversized black top, pink gloves, pen machine.
 - **Front view (scenes 5, 8)**: same hair pulled back (curtain fringe parted

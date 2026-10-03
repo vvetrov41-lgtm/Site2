@@ -11,7 +11,6 @@ import { star, heart } from '../fx/effects.js';
 import { drawMachine } from '../props/items.js';
 
 const HAIR = { fill: C.kHair, tint: 0.72, hatch: C.kHairHatch, hatchAlpha: 0.7, spacing: 8 };
-const ROOTS = { fill: C.kRoots, tint: 0.22, hatch: C.kRoots, hatchAlpha: 0.5, occlude: false, ink: false, spacing: 6, lw: 4 };
 const HEAD = [138, 150];
 const SLEEVE = { ...FILL.black, fill: C.sleeve, tint: 0.85 };
 
@@ -24,14 +23,10 @@ function pearls(key, y0, sag, n, w) {
   }
 }
 
-function rootsAtParting(key, nod = 0) {
+// Centre parting in a slightly deeper pink (no dark roots).
+function parting(key, nod = 0) {
   const y = nod * 10;
-  // darker regrowth: short soft strokes fanning out from the parting
-  const fan = [[-46, -150], [-30, -160], [-16, -168], [16, -168], [30, -160], [46, -150], [-22, -128], [22, -128]];
-  fan.forEach(([x, yy], i) => {
-    stroke(`${key}.${i}`, [[x * 0.15, -180 + y], [x * 0.6, (yy - 180) / 2 + y], [x, yy + y]], { w: 5, color: C.kRoots, alpha: 0.55 });
-  });
-  stroke(key + '.part', [[0, -184 + y], [3, -142 + y], [0, -106 + y]], { w: 4.5, color: C.kRoots });
+  stroke(key, [[0, -184 + y], [3, -142 + y], [0, -106 + y]], { w: 4, color: C.kHairHatch });
 }
 
 const KRISTINA = {
@@ -94,7 +89,7 @@ const KRISTINA = {
       // pulled back; curtain fringe parted in the middle keeps the moon visible
       shape('k.cap', [[-146, -6], [-158, -84], [-120, -150], [-58, -180], [0, -186], [58, -180], [120, -150], [158, -84], [146, -6], [136, -24], [120, -44], [98, -56], [66, -74], [34, -92], [0, -100], [-34, -92], [-66, -74], [-98, -56], [-120, -44], [-136, -14]].map(([x, yy]) => [x, yy + y]), HAIR);
       for (const s of [-1, 1]) stroke(`k.cw${s}`, [[s * 20, -96 + y], [s * 70, -70 + y], [s * 118, -36 + y], [s * 136, 4 + y]], { w: 3, color: C.kHairHatch });
-      rootsAtParting('k.roots', nod);
+      parting('k.part', nod);
       stroke('k.str1', [[-60, -160 + y], [-110, -96 + y]], { w: 3, color: C.kHairHatch });
       stroke('k.str2', [[60, -160 + y], [108, -96 + y]], { w: 3, color: C.kHairHatch });
       // AirPod in the screen-right ear
@@ -109,7 +104,7 @@ const KRISTINA = {
       [[-150, -6], [-154, -84], [-118, -144], [-58, -176], [0, -184], [58, -176], [118, -144], [154, -84], [150, -6], [132, -40], [104, -60], [76, -52], [50, -68], [24, -72], [0, -84], [-24, -72], [-50, -68], [-76, -52], [-104, -60], [-132, -40]].map(([x, yy]) => [x, yy + y]),
       HAIR,
     );
-    rootsAtParting('k.roots', nod);
+    parting('k.part', nod);
     for (let i = 0; i < 4; i++) {
       const x = -96 + i * 64 + (i > 1 ? 8 : -8);
       stroke(`k.wisp${i}`, [[x * 0.7, -130 + y], [x, -88 + y], [x + (i > 1 ? 6 : -6), -62 + y]], { w: 3, color: C.kHairHatch });
@@ -174,7 +169,6 @@ export function drawKristinaProfile(p) {
   shape('kp.head', PROFILE_HEAD, FILL.skin);
   // hair cap swept back, fringe over the forehead
   shape('kp.hair', [[-150, -6], [-146, -96], [-96, -152], [0, -168], [80, -148], [124, -96], [136, -44], [112, -48], [96, -76], [60, -70], [20, -62], [-20, -36], [-44, -4], [-74, 30], [-118, 54]], HAIR);
-  shape('kp.roots', [[-100, -140], [-20, -168], [60, -152], [20, -132], [-40, -118], [-90, -110]], ROOTS);
   stroke('kp.str', [[-40, -150], [-96, -70], [-120, 10]], { w: 3, color: C.kHairHatch });
   stroke('kp.str2', [[30, -150], [-20, -100], [-60, -30]], { w: 3, color: C.kHairHatch });
   // ear + AirPod
